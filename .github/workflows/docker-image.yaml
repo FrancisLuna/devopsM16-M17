@@ -50,8 +50,7 @@ jobs:
         with:
           file: Docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:${{ env.COMMIT_COUNT }}
-
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:${{ env.TAG }}
 
   trivy_scan:
     runs-on: ubuntu-latest
