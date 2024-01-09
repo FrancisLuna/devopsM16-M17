@@ -62,5 +62,5 @@ jobs:
             -v $(pwd):/workdir \
             -w /workdir \
             aquasec/trivy \
-            trivy --exit-code 0 --severity HIGH --no-progress my-custom-image
+            trivy --severity HIGH --no-progress my-custom-image
         
