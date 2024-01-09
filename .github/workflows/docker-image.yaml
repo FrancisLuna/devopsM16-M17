@@ -6,7 +6,7 @@ on:
       - "main"
       # - "development"
     paths:
-      - "Docker/**" #Solo cambios en la carpeta Docker
+      # - "Docker/**" #Solo cambios en la carpeta Docker
 
 permissions:
   contents: read
