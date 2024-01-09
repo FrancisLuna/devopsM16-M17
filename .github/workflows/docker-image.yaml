@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - "main"
-      - "development"
-    paths:
-      - "Docker/**" #Solo cambios en la carpeta Docker
+      - "ordered"
+    #   - "development"
+    # paths:
+    #   - "Docker/**" #Solo cambios en la carpeta Docker
 
 permissions:
   contents: read
