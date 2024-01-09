@@ -1,0 +1,70 @@
+name: ci/cd
+
+on:
+  push:
+    branches:
+      - "main"
+      - "development"
+    paths:
+      - "Docker/**" #Solo cambios en la carpeta Docker
+
+permissions:
+  contents: read
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./Docker/Dockerfile
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Git
+        run: echo "COMMIT_COUNT=$(git rev-list --count HEAD)" >> $GITHUB_ENV
+
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          file: Docker/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:latest
+
+  trivy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Scan vulnerabilities with Trivy
+        run: |
+          docker build -t my-custom-image -f Docker/Dockerfile .
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/workdir \
+            -w /workdir \
+            ghcr.io/aquasecurity/trivy:latest image --severity CRITICAL --format table my-custom-image

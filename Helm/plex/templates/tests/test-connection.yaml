@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Release.Name }}-test-pod
+spec:
+  containers:
+    - name: test
+      image: busybox
+      command: ['sh', '-c', 'echo Success!']
+  restartPolicy: Never

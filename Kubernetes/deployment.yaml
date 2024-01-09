@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-oo-plex
+  labels:
+    app: docker-on-plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker-on-plex
+  template:
+    metadata:
+      labels:
+        app: docker-on-plex
+    spec:
+      containers:
+      - name: docker-on-plex
+        image: francisluna0/devopsm16:latest
+        ports:
+        - containerPort: 32400
