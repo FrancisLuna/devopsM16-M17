@@ -23,24 +23,6 @@ jobs:
         with:
           dockerfile: ./Docker/Dockerfile
 
-  # trivy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-  #     - name: Build an image from Dockerfile
-  #       run: |
-  #         docker build -t docker.io/my-organization/my-app:${{ github.sha }} .
-  #     - name: Run Trivy vulnerability scanner
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-  #         format: 'table'
-  #         exit-code: '1'
-  #         ignore-unfixed: true
-  #         vuln-type: 'os,library'
-  #         severity: 'CRITICAL,HIGH'
-
   build:
     runs-on: ubuntu-latest
 
@@ -64,3 +46,21 @@ jobs:
           file: Docker/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:latest
+
+  trivy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Scan vulnerabilities with Trivy
+        run: |
+          docker build -t my-custom-image -f Docker/Dockerfile .
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/workdir \
+            -w /workdir \
+            aquasec/trivy \
+            trivy --exit-code 0 --severity HIGH --no-progress my-custom-image
+        
