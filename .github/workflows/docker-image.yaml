@@ -1,0 +1,68 @@
+name: ci/cd
+
+on:
+  push:
+    branches:
+      - "main"
+      - "development"
+    paths:
+      - "Docker/**" #Solo cambios en la carpeta Docker
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # - name: Set up Python 3.8
+      #   uses: actions/setup-python@v3
+      #   with:
+      #     python-version: "3.8"
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install flake8
+      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      # - name: Lint with flake8
+      #   run: |
+      #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./Docker/Dockerfile
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:latest
+
+      - name: Scan vulnerabilities with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ steps.docker_build.outputs.image }}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:latest
