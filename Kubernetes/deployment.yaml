@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: docker-on-plex
-        image: florpezz/plex_on_docker:2
+        image: francisluna0/devopsm16:latest
         ports:
         - containerPort: 32400
