@@ -43,8 +43,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          context: ./Docker/
-          file: Dockerfile
+          # context: ./Docker/
+          file: Docker/Dockerfile
           push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:latest
 
