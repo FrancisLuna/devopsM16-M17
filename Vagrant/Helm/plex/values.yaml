@@ -5,3 +5,5 @@ image:
   tag: latest
 
 containerPort: 32400
+service:
+  port: 80 

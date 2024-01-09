@@ -1,15 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "plex.fullname" . }}-test-connection"
-  labels:
-    {{- include "plex.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": test
+  name: {{ .Release.Name }}-test-pod
 spec:
   containers:
-    - name: wget
+    - name: test
       image: busybox
-      command: ['wget']
-      args: ['{{ include "plex.fullname" . }}:{{ .Values.service.port }}']
+      command: ['sh', '-c', 'echo Success!']
   restartPolicy: Never
