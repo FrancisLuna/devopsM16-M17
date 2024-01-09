@@ -61,6 +61,4 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $(pwd):/workdir \
             -w /workdir \
-            aquasec/trivy \
-            trivy --severity HIGH --no-progress my-custom-image
-        
+            ghcr.io/aquasecurity/trivy:latest image --severity CRITICAL --format table my-custom-image
