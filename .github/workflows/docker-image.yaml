@@ -35,7 +35,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Set up Git
-        run: echo "TAG=commit-$(git rev-list --count HEAD)" >> $GITHUB_ENV
+        run: echo "TAG=$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
 
       - name: Login to Docker Hub
@@ -50,7 +50,7 @@ jobs:
         with:
           file: Docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:$${{ env.TAG }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devopsm16:${{ env.TAG }}
 
   trivy_scan:
     runs-on: ubuntu-latest
