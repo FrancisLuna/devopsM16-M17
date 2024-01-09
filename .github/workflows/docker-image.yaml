@@ -3,10 +3,10 @@ name: ci/cd
 on:
   push:
     branches:
-      # - "main"
+      - "main"
       - "development"
-    # paths:
-      # - "Docker/**" #Solo cambios en la carpeta Docker
+    paths:
+      - "Docker/**" #Solo cambios en la carpeta Docker
 
 permissions:
   contents: read
