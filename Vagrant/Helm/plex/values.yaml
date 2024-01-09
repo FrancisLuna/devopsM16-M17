@@ -1,0 +1,7 @@
+replicaCount: 1
+
+image:
+  repository: francisluna0/devopsm16
+  tag: latest
+
+containerPort: 32400
